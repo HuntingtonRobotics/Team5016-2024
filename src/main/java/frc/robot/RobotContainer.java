@@ -74,6 +74,8 @@ public class RobotContainer {
     // left Bumper
     m_driverController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
 
+    m_driverController.rightBumper().whileTrue(m_launcher.reverseIntakeCommand());
+
     // Use LT to control speed of intake
     // This is extra and probably not neeeded for competition
     // m_driverController
