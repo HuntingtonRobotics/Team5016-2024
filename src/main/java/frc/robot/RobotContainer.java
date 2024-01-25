@@ -13,6 +13,7 @@ import frc.robot.commands.Autos;
 // import frc.robot.subsystems.PWMLauncher;
 import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.CANLifter;
 
 /**
@@ -23,11 +24,9 @@ import frc.robot.subsystems.CANLifter;
  */
 public class RobotContainer {
   // The robot's subsystems are defined here.
-  // private final PWMDrivetrain m_drivetrain = new PWMDrivetrain();
   private final CANDrivetrain m_drivetrain = new CANDrivetrain();
-  // private final PWMLauncher m_launcher = new PWMLauncher();
-  // private final CANIntake m_intake = new CANIntake();
-  private final Intake m_launcher = new Intake();
+  private final Intake m_intake = new Intake();
+  private final Launcher m_launcher = new Launcher();
   private final CANLifter m_lifter = new CANLifter();
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
@@ -70,25 +69,24 @@ public class RobotContainer {
     //             .andThen(new LaunchNote(m_launcher))
     //             .handleInterrupt(() -> m_launcher.stop()));
 
-    // Set up a binding to run the intake command while the operator is pressing and holding the
-    // left Bumper
-    m_driverController.leftBumper().whileTrue(m_launcher.getIntakeCommand());
+    // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
+    m_driverController.leftBumper().whileTrue(m_intake.getIntakeCommand());
 
-    m_driverController.rightBumper().whileTrue(m_launcher.reverseIntakeCommand());
+    m_driverController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
 
-    // Use LT to control speed of intake
-    // This is extra and probably not neeeded for competition
-    // m_driverController
-    //     .leftTrigger(0.25)
-    //     .whileTrue(m_launcher.setIntakeSpeed(-m_driverController.getLeftTriggerAxis()));
+    // Launcher commands
+    //  Temporarily map XYAB buttons to different speeds while we figure out the best launch speed
+    m_driverController.x().whileTrue(m_launcher.getlaunchCommand(0.2));
+    m_driverController.y().whileTrue(m_launcher.getlaunchCommand(0.4));
+    m_driverController.b().whileTrue(m_launcher.getlaunchCommand(0.6));
+    m_driverController.a().whileTrue(m_launcher.getlaunchCommand(0.8));
 
-    /* m_feedWheel.leftTrigger(
-            new RunCommand(
-                () ->
-                    m_feedWheel.set(speed).setIntakeSpeed(
-                        m_driverController.leftTrigger)
-          ));
-    */
+    // POC: Use LT to control speed of intake to determine the best constant speed
+    //  This is extra and probably not neeeded for competition
+    m_driverController
+    .leftTrigger(0.25)
+    .onTrue(m_intake.setIntakeSpeed(m_driverController.getLeftTriggerAxis()));
+    //.toggleOnTrue()
 
     // Lifter controlled with POV control i.e. "hat"
     m_driverController.povUp().whileTrue(m_lifter.getLifterUpCommand());
