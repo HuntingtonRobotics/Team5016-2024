@@ -12,7 +12,7 @@ import frc.robot.commands.Autos;
 // import frc.robot.subsystems.PWMDrivetrain;
 // import frc.robot.subsystems.PWMLauncher;
 import frc.robot.subsystems.CANDrivetrain;
-import frc.robot.subsystems.CANLauncher;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.CANLifter;
 
 /**
@@ -27,7 +27,7 @@ public class RobotContainer {
   private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   // private final PWMLauncher m_launcher = new PWMLauncher();
   // private final CANIntake m_intake = new CANIntake();
-  private final CANLauncher m_launcher = new CANLauncher();
+  private final Intake m_launcher = new Intake();
   private final CANLifter m_lifter = new CANLifter();
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
