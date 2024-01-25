@@ -7,7 +7,7 @@ package frc.robot.commands;
 import static frc.robot.Constants.LauncherConstants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PWMLauncher;
+import frc.robot.subsystems.Launcher;
 
 // import frc.robot.subsystems.CANLauncher;
 
@@ -15,12 +15,12 @@ import frc.robot.subsystems.PWMLauncher;
  * will override.
  */
 public class LaunchNote extends Command {
-  PWMLauncher m_launcher;
+  Launcher m_launcher;
 
   // CANLauncher m_launcher;
 
   /** Creates a new LaunchNote. */
-  public LaunchNote(PWMLauncher launcher) {
+  public LaunchNote(Launcher launcher) {
     // save the launcher system internally
     m_launcher = launcher;
 
@@ -32,8 +32,7 @@ public class LaunchNote extends Command {
   @Override
   public void initialize() {
     // Set the wheels to launching speed
-    m_launcher.setLaunchWheel(kLauncherSpeed);
-    m_launcher.setFeedWheel(kLaunchFeederSpeed);
+    m_launcher.setMotorSpeed(kLaunchFeederSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
