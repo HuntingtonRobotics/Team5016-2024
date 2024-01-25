@@ -4,11 +4,10 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.LauncherConstants.*;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   // CANSparkMax m_launchWheel;
@@ -16,7 +15,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Launcher. */
   public Intake() {
     // m_launchWheel = new CANSparkMax(kLauncherID, MotorType.kBrushed);
-    m_intake = new WPI_TalonSRX(kLowerFeederID);
+    m_intake = new WPI_TalonSRX(IntakeConstants.IntakeMotorID);
   
 
    
@@ -37,7 +36,7 @@ public class Intake extends SubsystemBase {
     return this.startEnd(
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
-          setFeedWheel(kIntakeFeederSpeed);
+          setFeedWheel(IntakeConstants.IntakeFeederSpeed);
           //m_feedWheel_lower.set(kIntakeFeederSpeed);
           //  setLaunchWheel(kIntakeLauncherSpeed);
         },
@@ -53,7 +52,7 @@ public class Intake extends SubsystemBase {
     return this.startEnd(
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
-          setFeedWheel(-kIntakeFeederSpeed);
+          setFeedWheel(-IntakeConstants.IntakeFeederSpeed);
           //m_feedWheel_lower.set(kIntakeFeederSpeed);
           //  setLaunchWheel(kIntakeLauncherSpeed);
         },
@@ -65,10 +64,11 @@ public class Intake extends SubsystemBase {
 
   // Proof of concept
   public Command setIntakeSpeed(double speed) {
-    return this.runOnce(
-        () -> {
-          setFeedWheel(kIntakeFeederSpeed);
-        });
+    return this.run(() -> setFeedWheel(speed));
+    // return this.runEnd(
+    //     () -> setFeedWheel(IntakeConstants.IntakeFeederSpeed),
+    //     () -> setFeedWheel(0)
+    //     );
   }
 
   // An accessor method to set the speed (technically the output percentage) of the launch wheel
