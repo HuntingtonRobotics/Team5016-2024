@@ -84,10 +84,11 @@ public class RobotContainer {
 
     // POC: Use LT to control speed of intake to determine the best constant speed
     //  This is extra and probably not neeeded for competition
-    m_driverController
-        .leftTrigger(0.25)
-        .onTrue(m_intake.setIntakeSpeed(m_driverController.getLeftTriggerAxis()));
-    // .toggleOnTrue()
+    // m_driverController
+    //     .leftTrigger(0.25)
+    //     .whileTrue(
+    //         new RunCommand(() -> m_intake.setFeedWheel(m_driverController.getLeftTriggerAxis())))
+    //     .onFalse(new RunCommand(() -> m_intake.setFeedWheel(0)));
 
     // Lifter controlled with POV control i.e. "hat"
     m_driverController.povUp().whileTrue(m_lifter.getLifterUpCommand());
