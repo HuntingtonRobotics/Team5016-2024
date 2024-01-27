@@ -12,9 +12,9 @@ import frc.robot.commands.Autos;
 // import frc.robot.subsystems.PWMDrivetrain;
 // import frc.robot.subsystems.PWMLauncher;
 import frc.robot.subsystems.CANDrivetrain;
+import frc.robot.subsystems.CANLifter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
-import frc.robot.subsystems.CANLifter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -69,7 +69,8 @@ public class RobotContainer {
     //             .andThen(new LaunchNote(m_launcher))
     //             .handleInterrupt(() -> m_launcher.stop()));
 
-    // Set up a binding to run the intake command while the operator is pressing and holding the left Bumper
+    // Set up a binding to run the intake command while the operator is pressing and holding the
+    // left Bumper
     m_driverController.leftBumper().whileTrue(m_intake.getIntakeCommand());
 
     m_driverController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
@@ -84,9 +85,9 @@ public class RobotContainer {
     // POC: Use LT to control speed of intake to determine the best constant speed
     //  This is extra and probably not neeeded for competition
     m_driverController
-    .leftTrigger(0.25)
-    .onTrue(m_intake.setIntakeSpeed(m_driverController.getLeftTriggerAxis()));
-    //.toggleOnTrue()
+        .leftTrigger(0.25)
+        .onTrue(m_intake.setIntakeSpeed(m_driverController.getLeftTriggerAxis()));
+    // .toggleOnTrue()
 
     // Lifter controlled with POV control i.e. "hat"
     m_driverController.povUp().whileTrue(m_lifter.getLifterUpCommand());

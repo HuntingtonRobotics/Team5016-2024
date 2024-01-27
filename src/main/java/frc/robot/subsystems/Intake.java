@@ -12,13 +12,12 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase {
   // CANSparkMax m_launchWheel;
   WPI_TalonSRX m_intake;
+
   /** Creates a new Launcher. */
   public Intake() {
     // m_launchWheel = new CANSparkMax(kLauncherID, MotorType.kBrushed);
     m_intake = new WPI_TalonSRX(IntakeConstants.IntakeMotorID);
-  
 
-   
     // m_launchWheel.setSmartCurrentLimit(kLauncherCurrentLimit);
     // m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
   }
@@ -37,7 +36,7 @@ public class Intake extends SubsystemBase {
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
           setFeedWheel(IntakeConstants.IntakeFeederSpeed);
-          //m_feedWheel_lower.set(kIntakeFeederSpeed);
+          // m_feedWheel_lower.set(kIntakeFeederSpeed);
           //  setLaunchWheel(kIntakeLauncherSpeed);
         },
         // When the command stops, stop the wheels
@@ -53,7 +52,7 @@ public class Intake extends SubsystemBase {
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
           setFeedWheel(-IntakeConstants.IntakeFeederSpeed);
-          //m_feedWheel_lower.set(kIntakeFeederSpeed);
+          // m_feedWheel_lower.set(kIntakeFeederSpeed);
           //  setLaunchWheel(kIntakeLauncherSpeed);
         },
         // When the command stops, stop the wheels
@@ -79,7 +78,6 @@ public class Intake extends SubsystemBase {
   // An accessor method to set the speed (technically the output percentage) of the feed wheel
   public void setFeedWheel(double speed) {
     m_intake.set(speed);
-   
   }
 
   // A helper method to stop both wheels. You could skip having a method like this and call the
@@ -87,6 +85,5 @@ public class Intake extends SubsystemBase {
   public void stop() {
     //  m_launchWheel.set(0);
     m_intake.set(0);
-   
   }
 }

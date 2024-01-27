@@ -33,17 +33,17 @@ public final class Constants {
 
   public static class IntakeConstants {
     public static final int IntakeMotorID = 13;
-    public static final double IntakeFeederSpeed = -1.0;// -.2;
+    public static final double IntakeFeederSpeed = -1.0; // -.2;
 
     // Do we need this?
     public static final int kFeedCurrentLimit = 80;
   }
-  
+
   public static class LauncherConstants {
     // PWM ports/CAN IDs for motor controllers
     public static final int kLauncherLeftyID = 11;
     public static final int kLauncherRightyID = 12;
-    
+
     // Current limit for launcher and feed wheels
     public static final int kLauncherCurrentLimit = 80;
 

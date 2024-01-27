@@ -13,6 +13,7 @@ public class Launcher extends SubsystemBase {
   // CANSparkMax m_launchWheel;
   WPI_TalonSRX m_lefty;
   WPI_TalonSRX m_righty;
+
   /** Creates a new Launcher. */
   public Launcher() {
     // m_launchWheel = new CANSparkMax(kLauncherID, MotorType.kBrushed);
@@ -25,11 +26,8 @@ public class Launcher extends SubsystemBase {
     // m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
   }
 
-  public Command getlaunchCommand(double speed){
-    return this.startEnd(
-      () -> setMotorSpeed(speed),
-      () -> stop()
-      );
+  public Command getlaunchCommand(double speed) {
+    return this.startEnd(() -> setMotorSpeed(speed), () -> stop());
   }
 
   public void setMotorSpeed(double speed) {

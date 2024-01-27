@@ -16,7 +16,7 @@ public class CANLifter extends SubsystemBase {
     m_lifter_right = new WPI_TalonSRX(LifterConstants.kRightLifterID);
 
     m_lifter_left.follow(m_lifter_right);
-    //m_feedWheel_upper.follow(m_feedWheel_lower);
+    // m_feedWheel_upper.follow(m_feedWheel_lower);
   }
 
   public Command getLifterUpCommand() {
