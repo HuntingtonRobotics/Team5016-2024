@@ -12,9 +12,9 @@ import frc.robot.commands.Autos;
 // import frc.robot.subsystems.PWMDrivetrain;
 // import frc.robot.subsystems.PWMLauncher;
 import frc.robot.subsystems.CANDrivetrain;
-import frc.robot.subsystems.CANLifter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
+import frc.robot.subsystems.LifterArm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,7 +27,7 @@ public class RobotContainer {
   private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   private final Intake m_intake = new Intake();
   private final Launcher m_launcher = new Launcher();
-  private final CANLifter m_lifter = new CANLifter();
+  private final LifterArm m_lifter = new LifterArm();
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
