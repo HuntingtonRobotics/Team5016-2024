@@ -31,7 +31,7 @@ public class Launcher extends SubsystemBase {
   }
 
   public void setMotorSpeed(double speed) {
-    m_lefty.set(speed);
+    m_lefty.set(-speed);
     m_righty.set(speed);
   }
 
