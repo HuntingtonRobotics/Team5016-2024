@@ -55,7 +55,7 @@ public final class Constants {
   }
 
   public static class LifterConstants {
-    public static final int kRightLifterID = 14;
-    public static final int kLeftLifterID = 99;
+    public static final int kRightLifterID = 8;
+    public static final int kLeftLifterID = 5;
   }
 }
