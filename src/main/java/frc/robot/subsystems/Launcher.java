@@ -10,13 +10,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 
 public class Launcher extends SubsystemBase {
-  // CANSparkMax m_launchWheel;
   WPI_TalonSRX m_lefty;
   WPI_TalonSRX m_righty;
 
   /** Creates a new Launcher. */
   public Launcher() {
-    // m_launchWheel = new CANSparkMax(kLauncherID, MotorType.kBrushed);
     m_lefty = new WPI_TalonSRX(LauncherConstants.kLauncherLeftyID);
     m_righty = new WPI_TalonSRX(LauncherConstants.kLauncherRightyID);
 
