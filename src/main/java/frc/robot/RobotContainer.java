@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimAndRange;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareLaunch;
 import frc.robot.subsystems.CANDrivetrain;
@@ -61,6 +62,8 @@ public class RobotContainer {
                         .getLeftY()), // For 2024 we had to swap Y & X to map properly to the XBox
             // controller joysticks
             m_drivetrain));
+
+    m_driverController.b().whileTrue(AimAndRange.getCommand(m_drivetrain));
 
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
