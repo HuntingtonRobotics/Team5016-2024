@@ -17,7 +17,7 @@ import frc.robot.commands.PrepareLaunch;
 import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
-import frc.robot.subsystems.LifterArm;
+import frc.robot.subsystems.LauncherArm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,7 +30,10 @@ public class RobotContainer {
   private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   private final Intake m_intake = new Intake();
   private final Launcher m_launcher = new Launcher();
-  private final LifterArm m_lifter = new LifterArm();
+  private final LauncherArm m_lifter = new LauncherArm();
+
+  public final DigitalInput limitSwitch = new DigitalInput(0);
+  public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -69,9 +72,10 @@ public class RobotContainer {
     m_driverController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
 
     // Stop the intake when the limit switch is activated ("false")
-    DigitalInput limitSwitch = new DigitalInput(0);
-    Trigger exampleTrigger = new Trigger(limitSwitch::get);
-    exampleTrigger.whileFalse(Commands.run(m_intake::stop));
+    limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
+
+    m_driverController.b().whileTrue(m_launcher.getlaunchCommand(.2));
+    m_driverController.x().whileTrue(m_launcher.getlaunchCommand(.8));
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
