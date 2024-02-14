@@ -50,6 +50,10 @@ public class CANDrivetrain extends SubsystemBase {
     // Put the front motors into the differential drive object. This will control all 4 motors with
     // the rears set to follow the fronts
     m_drivetrain = new DifferentialDrive(leftFront, rightFront);
+    
+    // Resource cleanup
+    leftRear.close();
+    rightRear.close();
   }
 
   /*Method to control the drivetrain using arcade drive. Arcade drive takes a speed in the X (forward/back) direction
