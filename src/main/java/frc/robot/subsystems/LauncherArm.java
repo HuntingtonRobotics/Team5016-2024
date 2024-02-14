@@ -18,7 +18,7 @@ public class LauncherArm extends SubsystemBase {
     m_lifter_left.follow(m_lifter_right);
   }
 
-  public Command getLifterUpCommand() {
+  public Command getLauncherUpCommand() {
     return this.startEnd(
         () -> {
           m_lifter_left.set(1.0);
@@ -30,7 +30,7 @@ public class LauncherArm extends SubsystemBase {
         });
   }
 
-  public Command getLifterDownCommand() {
+  public Command getLauncherDownCommand() {
     return this.startEnd(
         () -> {
           m_lifter_left.set(-1.0);

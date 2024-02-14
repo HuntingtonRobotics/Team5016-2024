@@ -92,6 +92,12 @@ public class RobotContainer {
     // Lifter controlled with POV control i.e. "hat"
     m_driverController.povUp().whileTrue(m_lifter.getLifterUpCommand());
     m_driverController.povDown().whileTrue(m_lifter.getLifterDownCommand());
+
+
+m_driverController.povRight().whileTrue(m_spin1.getLifterUp());
+    m_driverController.povLeft().whileTrue(m_lifter.getLifterDownCommand());
+
+
   }
 
   /**
