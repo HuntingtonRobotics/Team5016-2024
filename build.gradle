@@ -110,7 +110,7 @@ tasks.withType(JavaCompile) {
 spotless {
     java {
         target fileTree('.') {
-            include '**/*.java'
+            include ''
             exclude '**/build/**', '**/build-*/**'
         }
         toggleOffOn()
