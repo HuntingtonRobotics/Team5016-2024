@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.LimelightHelpers;
+import frc.robot.subsystems.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class AimAndRange {
   static String LimelightCameraName = "limelight";
@@ -15,6 +16,9 @@ public class AimAndRange {
   public static Command getCommand(CANDrivetrain drivetrain) {
     double tx = LimelightHelpers.getTX(LimelightCameraName);
     double ty = LimelightHelpers.getTY(LimelightCameraName);
+
+    LimelightTarget_Fiducial ltf = new LimelightTarget_Fiducial();
+    ltf.
 
     double heading_error = -tx;
     double distance_error = -ty;
