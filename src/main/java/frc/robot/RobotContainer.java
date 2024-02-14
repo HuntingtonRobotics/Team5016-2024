@@ -4,10 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LauncherConstants;
@@ -27,6 +27,7 @@ import frc.robot.subsystems.LauncherArm;
  */
 public class RobotContainer {
   // The robot's subsystems are defined here.
+  private final SwerveDriveContainer swerve = new SwerveDriveContainer();
   private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   private final Intake m_intake = new Intake();
   private final Launcher m_launcher = new Launcher();
@@ -55,15 +56,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Set the default command for the drivetrain to drive using the joysticks
-    m_drivetrain.setDefaultCommand(
-        new RunCommand(
-            () ->
-                m_drivetrain.arcadeDrive(
-                    m_driverController.getRightX(),
-                    m_driverController
-                        .getLeftY()), // For 2024 we had to swap Y & X to map properly to the XBox
-            // controller joysticks
-            m_drivetrain));
+    configureDrivetrainBindings();
 
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
@@ -73,9 +66,6 @@ public class RobotContainer {
 
     // Stop the intake when the limit switch is activated ("false")
     limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
-
-    m_driverController.b().whileTrue(m_launcher.getlaunchCommand(.2));
-    m_driverController.x().whileTrue(m_launcher.getlaunchCommand(.8));
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
@@ -89,9 +79,36 @@ public class RobotContainer {
                 .andThen(m_intake.getIntakeCommand())
                 .handleInterrupt(() -> m_launcher.stop()));
 
-    // Lifter controlled with POV control i.e. "hat"
+    // Lifter ("claw") controlled with POV control i.e. "hat"
     m_driverController.povUp().whileTrue(m_lifter.getLifterUpCommand());
     m_driverController.povDown().whileTrue(m_lifter.getLifterDownCommand());
+  }
+
+  private void configureDrivetrainBindings() {
+    // m_drivetrain.setDefaultCommand(
+    //     new RunCommand(
+    //         () ->
+    //             m_drivetrain.arcadeDrive(
+    //                 m_driverController.getRightX(),
+    //                 m_driverController
+    //                     .getLeftY()), // For 2024 we had to swap Y & X to map properly to the XBox
+    //         // controller joysticks
+    //         m_drivetrain));
+
+    swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        swerve.drivetrain.applyRequest(() -> 
+          swerve.drive.withVelocityX(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
+                      .withVelocityY(-m_driverController.getLeftX() * swerve.MaxSpeed) // Drive left with negative X (left)
+                      .withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left)
+        ));
+
+    m_driverController.b().whileTrue(swerve.drivetrain
+        .applyRequest(() -> swerve.point.withModuleDirection(new Rotation2d(-m_driverController.getLeftY(), -m_driverController.getLeftX()))));
+    m_driverController.x().whileTrue(swerve.drivetrain.applyRequest(() -> swerve.brake));
+
+    // reset the field-centric heading
+    m_driverController.start().onTrue(swerve.drivetrain.runOnce(() -> swerve.drivetrain.seedFieldRelative()));
+
   }
 
   /**
