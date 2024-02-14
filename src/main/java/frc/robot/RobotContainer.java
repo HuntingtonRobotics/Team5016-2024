@@ -80,12 +80,12 @@ public class RobotContainer {
                 .handleInterrupt(() -> m_launcher.stop()));
 
     // Lifter ("claw") controlled with POV control i.e. "hat"
-    m_driverController.povUp().whileTrue(m_lifter.getLifterUpCommand());
-    m_driverController.povDown().whileTrue(m_lifter.getLifterDownCommand());
+    m_driverController.povUp().whileTrue(m_lifter.getLauncherUpCommand());
+    m_driverController.povDown().whileTrue(m_lifter.getLauncherDownCommand());
 
 
-m_driverController.povRight().whileTrue(m_spin1.getLifterUp());
-    m_driverController.povLeft().whileTrue(m_lifter.getLifterDownCommand());
+    // m_driverController.povRight().whileTrue(m_spin1.getLifterUp());
+    // m_driverController.povLeft().whileTrue(m_lifter.getLifterDownCommand());
 
 
   }
