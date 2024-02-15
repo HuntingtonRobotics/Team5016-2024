@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClawConstants;
+import frc.robot.Constants.LifterConstants;
 
 public class Claw extends SubsystemBase {
   WPI_TalonSRX m_spin1;
@@ -18,8 +20,8 @@ public class Claw extends SubsystemBase {
   public Claw() {
     //Here we declare the two new spin motors
      
-    m_spin1 = new WPI_TalonSRX(2);
-    m_spin2 = new WPI_TalonSRX(1);
+    m_spin1 = new WPI_TalonSRX(ClawConstants.kRightClaw);
+    m_spin2 = new WPI_TalonSRX(ClawConstants.kLeftClaw);
 
     m_spin2.follow(m_spin1);
 
@@ -27,21 +29,7 @@ public class Claw extends SubsystemBase {
     // m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
     
   }
-  public Command getlaunchCommand(double speed) {
-    return this.startEnd(() -> setSpinMotorSpeed(speed), () -> stopSpin());
-  }
-
-  public void setSpinMotorSpeed(double speed) {
-    m_spin1.set(-speed);
-    m_spin2.set(speed);
-  }
-
-  // A helper method to stop both wheels. You could skip having a method like this and call the
-  // individual accessors with speed = 0 instead
-  public void stopSpin() {
-    m_spin1.set(0);
-    m_spin2.set(0);
-  }
+ 
 
  public Command getClawUp() {
     return this.startEnd(

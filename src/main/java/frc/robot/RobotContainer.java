@@ -18,6 +18,7 @@ import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.LauncherArm;
+import frc.robot.subsystems.Claw;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,7 +32,9 @@ public class RobotContainer {
   private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   private final Intake m_intake = new Intake();
   private final Launcher m_launcher = new Launcher();
-  private final LauncherArm m_lifter = new LauncherArm();
+  private final LauncherArm m_launcherArm = new LauncherArm();
+  private final Claw m_claw = new Claw();
+  
 
   public final DigitalInput limitSwitch = new DigitalInput(0);
   public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
@@ -79,13 +82,13 @@ public class RobotContainer {
                 .andThen(m_intake.getIntakeCommand())
                 .handleInterrupt(() -> m_launcher.stop()));
 
-    // Lifter ("claw") controlled with POV control i.e. "hat"
-    m_driverController.povUp().whileTrue(m_lifter.getLauncherUpCommand());
-    m_driverController.povDown().whileTrue(m_lifter.getLauncherDownCommand());
+    // Launcher controlled with POV control i.e. "hat"
+    m_driverController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
+    m_driverController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
 
 
-    // m_driverController.povRight().whileTrue(m_spin1.getLifterUp());
-    // m_driverController.povLeft().whileTrue(m_lifter.getLifterDownCommand());
+    m_driverController.povRight().whileTrue(m_claw.getClawDown());
+    m_driverController.povLeft().whileTrue(m_claw.getClawUp());
 
 
   }

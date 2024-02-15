@@ -58,4 +58,10 @@ public final class Constants {
     public static final int kRightLifterID = 8;
     public static final int kLeftLifterID = 5;
   }
+  public static class ClawConstants{
+    //these are sample numbers, they may need to be adjusted later as they are not the real numbers. 
+    public static final int kRightClaw = 100;
+    public static final int kLeftClaw = 110;
+  }
+  
 }
