@@ -94,16 +94,7 @@ public class RobotContainer {
   }
 
   private void configureDrivetrainBindings() {
-    // m_drivetrain.setDefaultCommand(
-    //     new RunCommand(
-    //         () ->
-    //             m_drivetrain.arcadeDrive(
-    //                 m_driverController.getRightX(),
-    //                 m_driverController
-    //                     .getLeftY()), // For 2024 we had to swap Y & X to map properly to the XBox
-    //         // controller joysticks
-    //         m_drivetrain));
-
+    
     swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         swerve.drivetrain.applyRequest(() -> 
           swerve.drive.withVelocityX(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
