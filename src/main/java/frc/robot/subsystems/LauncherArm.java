@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -12,6 +14,9 @@ public class LauncherArm extends SubsystemBase {
   private CANSparkMax m_left;
   private CANSparkMax m_right;
 
+  private Pigeon2 pigeonImu;
+  private StatusSignal<Double> pigeonPitch;
+
   public LauncherArm() {
 
     m_left = new CANSparkMax(LauncherArmConstants.kLeftLifterID, MotorType.kBrushless);
@@ -21,6 +26,15 @@ public class LauncherArm extends SubsystemBase {
 
     m_left.setSmartCurrentLimit(LauncherArmConstants.CurrentLimit);
     m_right.setSmartCurrentLimit(LauncherArmConstants.CurrentLimit);
+
+    pigeonImu = new Pigeon2(99);
+    pigeonPitch = pigeonImu.getPitch();
+  }
+
+  public Command moveToPitch(double angle) {
+    double armPitch = pigeonPitch.waitForUpdate(1)
+                                 .getValue();
+    
   }
 
   public Command getLauncherUpCommand() {
