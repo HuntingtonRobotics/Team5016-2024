@@ -4,20 +4,20 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-  WPI_TalonSRX m_intake;
+  private CANSparkMax m_intake;
 
   /** Creates a new Launcher. */
   public Intake() {
-    m_intake = new WPI_TalonSRX(IntakeConstants.IntakeMotorID);
-
-    // m_launchWheel.setSmartCurrentLimit(kLauncherCurrentLimit);
-    // m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
+    m_intake = new CANSparkMax(IntakeConstants.IntakeMotorID, MotorType.kBrushless);
+    m_intake.setSmartCurrentLimit(IntakeConstants.CurrentLimit);
   }
 
   /**
@@ -48,8 +48,6 @@ public class Intake extends SubsystemBase {
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
           setFeedWheel(-IntakeConstants.IntakeFeederSpeed);
-          // m_feedWheel_lower.set(kIntakeFeederSpeed);
-          //  setLaunchWheel(kIntakeLauncherSpeed);
         },
         // When the command stops, stop the wheels
         () -> {
