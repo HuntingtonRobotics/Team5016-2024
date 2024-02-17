@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,8 @@ public class RobotContainer {
   public final DigitalInput limitSwitch = new DigitalInput(0);
   public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
 
+  ShuffleboardConfig shuffleboard = new ShuffleboardConfig();
+
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
   private final CommandXboxController m_driverController =
@@ -51,6 +54,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    var cam = CameraServer.startAutomaticCapture();
+    shuffleboard.Setup(cam);
   }
 
   /**
