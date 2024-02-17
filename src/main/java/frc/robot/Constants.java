@@ -34,9 +34,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int IntakeMotorID = 13;
     public static final double IntakeFeederSpeed = -1.0; // -.2;
-
-    // Do we need this?
-    public static final int kFeedCurrentLimit = 80;
+    public static final int CurrentLimit = 80;
   }
 
   public static class LauncherConstants {
@@ -44,24 +42,25 @@ public final class Constants {
     public static final int kLauncherLeftyID = 11;
     public static final int kLauncherRightyID = 12;
 
-    // Current limit for launcher and feed wheels
     public static final int kLauncherCurrentLimit = 80;
 
-    // Speeds for wheels when intaking and launching. Intake speeds are negative to run the wheels
-    // in reverse
+    // Speeds for wheels when intaking and launching
+    //  Intake speeds could be negative to run the wheels in reverse
     public static final double kLauncherSpeed = 1;
     public static final double kLaunchFeederSpeed = 1;
     public static final double kLauncherDelay = 1;
   }
 
-  public static class LifterConstants {
+  public static class LauncherArmConstants {
     public static final int kRightLifterID = 8;
     public static final int kLeftLifterID = 5;
+    public static int CurrentLimit = 80;
   }
   public static class ClawConstants{
     //these are sample numbers, they may need to be adjusted later as they are not the real numbers. 
     public static final int kRightClaw = 100;
-    public static final int kLeftClaw = 110;
+    public static final int kLeftClaw = 110;    
+    public static int CurrentLimit = 80;
   }
   
 }

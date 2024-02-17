@@ -1,44 +1,49 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LifterConstants;
+import frc.robot.Constants.LauncherArmConstants;
 
 public class LauncherArm extends SubsystemBase {
 
-  WPI_TalonSRX m_lifter_left;
-  WPI_TalonSRX m_lifter_right;
+  private CANSparkMax m_left;
+  private CANSparkMax m_right;
 
   public LauncherArm() {
 
-    m_lifter_left = new WPI_TalonSRX(LifterConstants.kLeftLifterID);
-    m_lifter_right = new WPI_TalonSRX(LifterConstants.kRightLifterID);
+    m_left = new CANSparkMax(LauncherArmConstants.kLeftLifterID, MotorType.kBrushless);
+    m_right = new CANSparkMax(LauncherArmConstants.kRightLifterID, MotorType.kBrushless);
 
-    m_lifter_left.follow(m_lifter_right);
+    m_left.follow(m_right);
+
+    m_left.setSmartCurrentLimit(LauncherArmConstants.CurrentLimit);
+    m_right.setSmartCurrentLimit(LauncherArmConstants.CurrentLimit);
   }
 
   public Command getLauncherUpCommand() {
     return this.startEnd(
         () -> {
-          m_lifter_left.set(1.0);
-          m_lifter_right.set(-1.0);
+          m_left.set(1.0);
+          m_right.set(-1.0);
         },
         () -> {
-          m_lifter_left.set(0);
-          m_lifter_right.set(0);
+          m_left.set(0);
+          m_right.set(0);
         });
   }
 
   public Command getLauncherDownCommand() {
     return this.startEnd(
         () -> {
-          m_lifter_left.set(-1.0);
-          m_lifter_right.set(1.0);
+          m_left.set(-1.0);
+          m_right.set(1.0);
         },
         () -> {
-          m_lifter_left.set(0);
-          m_lifter_right.set(0);
+          m_left.set(0);
+          m_right.set(0);
         });
   }
 }

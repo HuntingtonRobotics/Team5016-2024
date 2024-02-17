@@ -4,34 +4,30 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
-import frc.robot.Constants.LifterConstants;
 
+/** Subsystem for the lifter-in-a-box component */
 public class Claw extends SubsystemBase {
-  WPI_TalonSRX m_spin1;
-  WPI_TalonSRX m_spin2;
+  private CANSparkMax m_spin1;
+  private CANSparkMax m_spin2;
 
-  /** Creates a new Launcher. */
-  //We need two new constants for this...
   public Claw() {
-    //Here we declare the two new spin motors
      
-    m_spin1 = new WPI_TalonSRX(ClawConstants.kRightClaw);
-    m_spin2 = new WPI_TalonSRX(ClawConstants.kLeftClaw);
+    m_spin1 = new CANSparkMax(ClawConstants.kRightClaw, MotorType.kBrushless);
+    m_spin2 = new CANSparkMax(ClawConstants.kLeftClaw, MotorType.kBrushless);
 
     m_spin2.follow(m_spin1);
 
-    // m_launchWheel.setSmartCurrentLimit(kLauncherCurrentLimit);
-    // m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
-    
+    m_spin1.setSmartCurrentLimit(ClawConstants.CurrentLimit);
+    m_spin2.setSmartCurrentLimit(ClawConstants.CurrentLimit);
   }
- 
-
- public Command getClawUp() {
+  
+  public Command getClawUp() {
     return this.startEnd(
         () -> {
           m_spin1.set(1.0);
@@ -54,8 +50,5 @@ public class Claw extends SubsystemBase {
           m_spin2.set(0);
         });
 
-
       }
-
-
 }
