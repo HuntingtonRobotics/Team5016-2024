@@ -4,24 +4,26 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 
 public class Launcher extends SubsystemBase {
-  WPI_TalonSRX m_lefty;
-  WPI_TalonSRX m_righty;
+  private CANSparkMax m_left;
+  private CANSparkMax m_right;
 
   /** Creates a new Launcher. */
   public Launcher() {
-    m_lefty = new WPI_TalonSRX(LauncherConstants.kLauncherLeftyID);
-    m_righty = new WPI_TalonSRX(LauncherConstants.kLauncherRightyID);
+    m_left = new CANSparkMax(LauncherConstants.kLauncherLeftyID, MotorType.kBrushless);
+    m_right = new CANSparkMax(LauncherConstants.kLauncherRightyID, MotorType.kBrushless);
 
-    m_lefty.follow(m_righty);
+    m_left.follow(m_right);
 
-    // m_launchWheel.setSmartCurrentLimit(kLauncherCurrentLimit);
-    // m_feedWheel.setSmartCurrentLimit(kFeedCurrentLimit);
+    m_left.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
+    m_right.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
   }
 
   public Command getlaunchCommand(double speed) {
@@ -29,14 +31,14 @@ public class Launcher extends SubsystemBase {
   }
 
   public void setMotorSpeed(double speed) {
-    m_lefty.set(-speed);
-    m_righty.set(speed);
+    m_left.set(-speed);
+    m_right.set(speed);
   }
 
   // A helper method to stop both wheels. You could skip having a method like this and call the
   // individual accessors with speed = 0 instead
   public void stop() {
-    m_lefty.set(0);
-    m_righty.set(0);
+    m_left.set(0);
+    m_right.set(0);
   }
 }

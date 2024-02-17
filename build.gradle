@@ -108,27 +108,27 @@ tasks.withType(JavaCompile) {
 
 // Spotless code formatter configuration
 spotless {
-    // java {
-    //     target fileTree('.') {
-    //         include '**/*.java'
-    //         exclude '**/build/**', '**/build-*/**'
-    //     }
-    //     toggleOffOn()
-    //     googleJavaFormat()
-    //     removeUnusedImports()
-    //     trimTrailingWhitespace()
-    //     endWithNewline()
-    // }
-    // groovyGradle {
-    //     target fileTree('.') {
-    //         include '**/*.gradle'
-    //         exclude '**/build/**', '**/build-*/**'
-    //     }
-    //     greclipse()
-    //     indentWithSpaces(4)
-    //     trimTrailingWhitespace()
-    //     endWithNewline()
-    // }
+    java {
+        target fileTree('.') {
+            include ''
+            exclude '**/build/**', '**/build-*/**'
+        }
+        toggleOffOn()
+        googleJavaFormat()
+        removeUnusedImports()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    groovyGradle {
+        target fileTree('.') {
+            include '**/*.gradle'
+            exclude '**/build/**', '**/build-*/**'
+        }
+        greclipse()
+        indentWithSpaces(4)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
     format 'xml', {
         target fileTree('.') {
             include '**/*.xml'
