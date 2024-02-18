@@ -77,39 +77,8 @@ public class RobotContainer {
    * below) or via the Trigger constructor for arbitary conditions
    */
   private void configureBindings() {
-    // Set the default command for the drivetrain to drive using the joysticks
     configureDrivetrainBindings();
-
-    // Set up a binding to run the intake command while the operator is pressing and holding the
-    // left Bumper
-    m_driverController.leftBumper().whileTrue(m_intake.getIntakeCommand());
-
-    m_driverController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
-
-    // Stop the intake when the limit switch is activated ("false")
-    limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
-
-    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
-     * command for 1 seconds and then run the LaunchNote command */
-    // m_operatorController
-    m_driverController
-        .a()
-        .whileTrue(
-            new PrepareLaunch(m_launcher)
-                .withTimeout(shuffleboard.getLauncherDelay())
-                // .andThen(new LaunchNote(m_launcher))
-                .andThen(m_intake.getIntakeCommand())
-                .handleInterrupt(() -> m_launcher.stop()));
-
-    // Launcher controlled with POV control i.e. "hat"
-    m_driverController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
-    m_driverController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
-
-
-    m_driverController.povRight().whileTrue(m_claw.getClawDown());
-    m_driverController.povLeft().whileTrue(m_claw.getClawUp());
-
-
+    configureGameplayBindings();
   }
 
   private void configureDrivetrainBindings() {
@@ -131,6 +100,35 @@ public class RobotContainer {
     // Auto aim & range - press button when getting close to an AprilTag
     m_driverController.y().whileTrue(AimAndRange.getCommand(swerve, assignedAlliance));
 
+  }
+
+  private void configureGameplayBindings() {
+    // Set up a binding to run the intake command while the operator is pressing and holding the
+    // left Bumper
+    m_operatorController.leftBumper().whileTrue(m_intake.getIntakeCommand());
+
+    m_operatorController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
+
+    // Stop the intake when the limit switch is activated ("false")
+    limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
+
+    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
+     * command for 1 seconds and then run the LaunchNote command */
+    m_operatorController
+        .a()
+        .whileTrue(
+            new PrepareLaunch(m_launcher)
+                .withTimeout(shuffleboard.getLauncherDelay())
+                // .andThen(new LaunchNote(m_launcher))
+                .andThen(m_intake.getIntakeCommand())
+                .handleInterrupt(() -> m_launcher.stop()));
+
+    // Launcher controlled with POV control i.e. "hat"
+    m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
+    m_operatorController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
+
+    m_operatorController.povRight().whileTrue(m_claw.getClawDown());
+    m_operatorController.povLeft().whileTrue(m_claw.getClawUp());
   }
 
   /**
