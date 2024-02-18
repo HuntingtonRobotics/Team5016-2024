@@ -84,7 +84,7 @@ public class RobotContainer {
         .a()
         .whileTrue(
             new PrepareLaunch(m_launcher)
-                .withTimeout(LauncherConstants.kLauncherDelay)
+                .withTimeout(shuffleboard.getLauncherDelay())
                 // .andThen(new LaunchNote(m_launcher))
                 .andThen(m_intake.getIntakeCommand())
                 .handleInterrupt(() -> m_launcher.stop()));
