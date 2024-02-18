@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAndRange;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareLaunch;
-import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.LauncherArm;
@@ -34,7 +34,6 @@ import frc.robot.subsystems.Claw;
 public class RobotContainer {
   // The robot's subsystems are defined here.
   private final SwerveDriveContainer swerve = new SwerveDriveContainer();
-  private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   private final Intake m_intake = new Intake();
   private final Launcher m_launcher = new Launcher();
   private final LauncherArm m_launcherArm = new LauncherArm();
@@ -85,8 +84,8 @@ public class RobotContainer {
     
     swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         swerve.drivetrain.applyRequest(() -> 
-          swerve.drive.withVelocityX(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
-                      .withVelocityY(-m_driverController.getLeftX() * swerve.MaxSpeed) // Drive left with negative X (left)
+          swerve.drive.withVelocityX(m_driverController.getLeftX() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
+                      .withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive left with negative X (left)
                       .withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
@@ -105,30 +104,34 @@ public class RobotContainer {
   private void configureGameplayBindings() {
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
-    m_operatorController.leftBumper().whileTrue(m_intake.getIntakeCommand());
+    m_driverController.leftBumper().whileTrue(m_intake.getIntakeCommand());
 
-    m_operatorController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
+    m_driverController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
 
     // Stop the intake when the limit switch is activated ("false")
     limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    m_operatorController
+    m_driverController
         .a()
         .whileTrue(
             new PrepareLaunch(m_launcher)
-                .withTimeout(shuffleboard.getLauncherDelay())
+                //.withTimeout(shuffleboard.getLauncherDelay())
+                .withTimeout(LauncherConstants.kLauncherDelay)
                 // .andThen(new LaunchNote(m_launcher))
                 .andThen(m_intake.getIntakeCommand())
                 .handleInterrupt(() -> m_launcher.stop()));
 
     // Launcher controlled with POV control i.e. "hat"
-    m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
-    m_operatorController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
+    m_driverController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
+    m_driverController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
 
-    m_operatorController.povRight().whileTrue(m_claw.getClawDown());
-    m_operatorController.povLeft().whileTrue(m_claw.getClawUp());
+
+
+    
+    m_driverController.povRight().whileTrue(m_claw.getClawDown());
+    m_driverController.povLeft().whileTrue(m_claw.getClawUp());
   }
 
   /**
@@ -138,6 +141,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_drivetrain);
+    //return Autos.exampleAuto(m_drivetrain);
+    return Commands.none();
   }
 }

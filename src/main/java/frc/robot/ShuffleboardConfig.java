@@ -7,18 +7,24 @@ import frc.robot.Constants.LauncherConstants;
 
 public class ShuffleboardConfig {
 
-    private GenericEntry LauncherDelay;
-    public double getLauncherDelay() {
-        return LauncherDelay.getDouble(LauncherConstants.kLauncherDelay);
-    }
+    // private GenericEntry LauncherDelay;
+    // public double getLauncherDelay() {
+    //     if  (LauncherDelay.exists()) {
+    //         return LauncherDelay.getDouble(LauncherConstants.kLauncherDelay);
+    //     }
+    //     else
+    //     {
+    //         return 1.0;
+    //     }
+    // }
 
     public void Setup(UsbCamera primaryCamera) {
 
         var tab = Shuffleboard.getTab("Teleoperated");
 
         tab.add(primaryCamera);
-        LauncherDelay = tab.add("Launcher Delay", 1.0)
-           .getEntry();
+        // LauncherDelay = tab.add("Launcher Delay", 1.0)
+        //    .getEntry();
 
         
     }

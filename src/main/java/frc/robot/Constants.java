@@ -32,15 +32,15 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int IntakeMotorID = 13;
+    public static final int IntakeMotorID = 32;
     public static final double IntakeFeederSpeed = -1.0; // -.2;
     public static final int CurrentLimit = 80;
   }
 
   public static class LauncherConstants {
     // PWM ports/CAN IDs for motor controllers
-    public static final int kLauncherLeftyID = 11;
-    public static final int kLauncherRightyID = 12;
+    public static final int kLauncherLeftyID = 30;
+    public static final int kLauncherRightyID = 31;
 
     public static final int kLauncherCurrentLimit = 80;
 
@@ -52,14 +52,14 @@ public final class Constants {
   }
 
   public static class LauncherArmConstants {
-    public static final int kRightLifterID = 8;
-    public static final int kLeftLifterID = 5;
+    public static final int kRightLifterID = 33;
+    public static final int kLeftLifterID = 34;
     public static int CurrentLimit = 80;
   }
   public static class ClawConstants{
     //these are sample numbers, they may need to be adjusted later as they are not the real numbers. 
-    public static final int kRightClaw = 100;
-    public static final int kLeftClaw = 110;    
+    public static final int kRightClaw = 99;
+    public static final int kLeftClaw = 98;    
     public static int CurrentLimit = 80;
   }
   
