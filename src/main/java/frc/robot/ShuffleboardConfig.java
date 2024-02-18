@@ -14,7 +14,7 @@ public class ShuffleboardConfig {
 
     public void Setup(UsbCamera primaryCamera) {
 
-        var tab = Shuffleboard.getTab("DriverDashboard");
+        var tab = Shuffleboard.getTab("Teleoperated");
 
         tab.add(primaryCamera);
         LauncherDelay = tab.add("Launcher Delay", 1.0)
