@@ -116,6 +116,9 @@ public class RobotContainer {
     // reset the field-centric heading
     m_driverController.start().onTrue(swerve.drivetrain.runOnce(() -> swerve.drivetrain.seedFieldRelative()));
 
+    // Auto aim & range - press button when getting close to an AprilTag
+    m_driverController.y().whileTrue(AimAndRange.getCommand(swerve));
+
   }
 
   /**
