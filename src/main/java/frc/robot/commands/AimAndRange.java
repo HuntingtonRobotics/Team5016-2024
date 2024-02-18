@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import javax.print.DocFlavor.STRING;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.SwerveDriveContainer;
@@ -12,9 +13,6 @@ public class AimAndRange {
   static String LimelightCameraName = "limelight";
   static String Limelight_BlueAmp = "AP7_BlueAmp";
   static String Limelight_RedAmp = "AP4_RedAmp";
-
-  // TEMP
-  static boolean isBlueTeam = true;
 
   // constants for fine-tuning movement
   static double kpAim = -0.1d;
@@ -43,9 +41,9 @@ public class AimAndRange {
     return new RunCommand(() -> drivetrain.arcadeDrive(speed, rotation), drivetrain);
   }
 
-  public static Command getCommand(SwerveDriveContainer swerve) {
+  public static Command getCommand(SwerveDriveContainer swerve, Alliance alliance) {
     String pipeline = "";
-    if (isBlueTeam)
+    if (alliance == Alliance.Blue)
     {
       pipeline = Limelight_BlueAmp;
     }

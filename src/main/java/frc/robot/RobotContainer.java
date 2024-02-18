@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,6 +47,8 @@ public class RobotContainer {
 
   ShuffleboardConfig shuffleboard = new ShuffleboardConfig();
 
+  Alliance assignedAlliance;
+
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
   private final CommandXboxController m_driverController =
@@ -52,11 +58,18 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    assignedAlliance = getAlliance();
+
     // Configure the trigger bindings
     configureBindings();
 
     var cam = CameraServer.startAutomaticCapture();
     shuffleboard.Setup(cam);
+  }
+
+  private Alliance getAlliance() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    return ally.get();
   }
 
   /**
@@ -117,7 +130,7 @@ public class RobotContainer {
     m_driverController.start().onTrue(swerve.drivetrain.runOnce(() -> swerve.drivetrain.seedFieldRelative()));
 
     // Auto aim & range - press button when getting close to an AprilTag
-    m_driverController.y().whileTrue(AimAndRange.getCommand(swerve));
+    m_driverController.y().whileTrue(AimAndRange.getCommand(swerve, assignedAlliance));
 
   }
 
