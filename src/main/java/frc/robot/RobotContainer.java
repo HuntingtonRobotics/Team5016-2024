@@ -4,17 +4,22 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimAndRange;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareLaunch;
-import frc.robot.subsystems.CANDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.LauncherArm;
@@ -29,7 +34,6 @@ import frc.robot.subsystems.Claw;
 public class RobotContainer {
   // The robot's subsystems are defined here.
   private final SwerveDriveContainer swerve = new SwerveDriveContainer();
-  private final CANDrivetrain m_drivetrain = new CANDrivetrain();
   private final Intake m_intake = new Intake();
   private final Launcher m_launcher = new Launcher();
   private final LauncherArm m_launcherArm = new LauncherArm();
@@ -38,6 +42,10 @@ public class RobotContainer {
 
   public final DigitalInput limitSwitch = new DigitalInput(0);
   public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
+
+  ShuffleboardConfig shuffleboard = new ShuffleboardConfig();
+
+  Alliance assignedAlliance;
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -48,8 +56,18 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    assignedAlliance = getAlliance();
+
     // Configure the trigger bindings
     configureBindings();
+
+    var cam = CameraServer.startAutomaticCapture();
+    shuffleboard.Setup(cam);
+  }
+
+  private Alliance getAlliance() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
+    return ally.get();
   }
 
   /**
@@ -58,9 +76,32 @@ public class RobotContainer {
    * below) or via the Trigger constructor for arbitary conditions
    */
   private void configureBindings() {
-    // Set the default command for the drivetrain to drive using the joysticks
     configureDrivetrainBindings();
+    configureGameplayBindings();
+  }
 
+  private void configureDrivetrainBindings() {
+    
+    swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        swerve.drivetrain.applyRequest(() -> 
+          swerve.drive.withVelocityX(m_driverController.getLeftX() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
+                      .withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive left with negative X (left)
+                      .withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left)
+        ));
+
+    m_driverController.b().whileTrue(swerve.drivetrain
+        .applyRequest(() -> swerve.point.withModuleDirection(new Rotation2d(-m_driverController.getLeftY(), -m_driverController.getLeftX()))));
+    m_driverController.x().whileTrue(swerve.drivetrain.applyRequest(() -> swerve.brake));
+
+    // reset the field-centric heading
+    m_driverController.start().onTrue(swerve.drivetrain.runOnce(() -> swerve.drivetrain.seedFieldRelative()));
+
+    // Auto aim & range - press button when getting close to an AprilTag
+    m_driverController.y().whileTrue(AimAndRange.getCommand(swerve, assignedAlliance));
+
+  }
+
+  private void configureGameplayBindings() {
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
     m_driverController.leftBumper().whileTrue(m_intake.getIntakeCommand());
@@ -72,11 +113,11 @@ public class RobotContainer {
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    // m_operatorController
     m_driverController
         .a()
         .whileTrue(
             new PrepareLaunch(m_launcher)
+                //.withTimeout(shuffleboard.getLauncherDelay())
                 .withTimeout(LauncherConstants.kLauncherDelay)
                 // .andThen(new LaunchNote(m_launcher))
                 .andThen(m_intake.getIntakeCommand())
@@ -87,28 +128,10 @@ public class RobotContainer {
     m_driverController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
 
 
+
+    
     m_driverController.povRight().whileTrue(m_claw.getClawDown());
     m_driverController.povLeft().whileTrue(m_claw.getClawUp());
-
-
-  }
-
-  private void configureDrivetrainBindings() {
-    
-    swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        swerve.drivetrain.applyRequest(() -> 
-          swerve.drive.withVelocityX(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
-                      .withVelocityY(-m_driverController.getLeftX() * swerve.MaxSpeed) // Drive left with negative X (left)
-                      .withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
-
-    m_driverController.b().whileTrue(swerve.drivetrain
-        .applyRequest(() -> swerve.point.withModuleDirection(new Rotation2d(-m_driverController.getLeftY(), -m_driverController.getLeftX()))));
-    m_driverController.x().whileTrue(swerve.drivetrain.applyRequest(() -> swerve.brake));
-
-    // reset the field-centric heading
-    m_driverController.start().onTrue(swerve.drivetrain.runOnce(() -> swerve.drivetrain.seedFieldRelative()));
-
   }
 
   /**
@@ -118,6 +141,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_drivetrain);
+    //return Autos.exampleAuto(m_drivetrain);
+    return Commands.none();
   }
 }
