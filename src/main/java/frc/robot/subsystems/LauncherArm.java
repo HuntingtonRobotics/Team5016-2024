@@ -12,6 +12,9 @@ public class LauncherArm extends SubsystemBase {
   private CANSparkMax m_left;
   private CANSparkMax m_right;
 
+  //where sC stands for speed constant
+  private double sC = 1.0;
+
   public LauncherArm() {
 
     m_left = new CANSparkMax(LauncherArmConstants.kLeftLifterID, MotorType.kBrushless);
@@ -26,8 +29,8 @@ public class LauncherArm extends SubsystemBase {
   public Command getLauncherUpCommand() {
     return this.startEnd(
         () -> {
-          m_left.set(1.0);
-          m_right.set(-1.0);
+          m_left.set(sC);
+          m_right.set(-sC);
         },
         () -> {
           m_left.set(0);
@@ -38,8 +41,8 @@ public class LauncherArm extends SubsystemBase {
   public Command getLauncherDownCommand() {
     return this.startEnd(
         () -> {
-          m_left.set(-1.0);
-          m_right.set(1.0);
+          m_left.set(-sC);
+          m_right.set(sC);
         },
         () -> {
           m_left.set(0);
