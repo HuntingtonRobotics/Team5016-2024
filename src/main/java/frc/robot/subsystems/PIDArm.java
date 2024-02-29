@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -7,12 +6,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-public class Arm extends SubsystemBase  {
+/* This code is to test PID-drive movement of the Launcher Arm */
+public class PIDArm extends SubsystemBase  {
     
     private CANSparkMax m_rightLead;
     private CANSparkMax m_leftFollow;
@@ -25,7 +23,7 @@ public class Arm extends SubsystemBase  {
 
 
 
-    public Arm() {
+    public PIDArm() {
       
         m_rightLead = new CANSparkMax(30, MotorType.kBrushless);
         m_leftFollow = new CANSparkMax(31, MotorType.kBrushless);
