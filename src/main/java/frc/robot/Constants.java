@@ -17,7 +17,7 @@ public final class Constants {
     // Port numbers for driver and operator gamepads. These correspond with the numbers on the USB
     // tab of the DriverStation
     public static final int kDriverControllerPort = 0;
-    public static final int kOperatorControllerPort = 1;
+    public static final int kOperatorControllerPort = 2;
   }
 
   public static class DrivetrainConstants {
