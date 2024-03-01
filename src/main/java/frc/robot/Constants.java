@@ -48,7 +48,7 @@ public final class Constants {
     //  Intake speeds could be negative to run the wheels in reverse
     public static final double kLauncherSpeed = 1;
     public static final double kLaunchFeederSpeed = 1;
-    public static final double kLauncherDelay = 1;
+    public static final double kLauncherDelay = 2.0;
   }
 
   public static class LauncherArmConstants {
