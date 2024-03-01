@@ -39,7 +39,7 @@ public final class Constants {
 
   public static class LauncherConstants {
     // PWM ports/CAN IDs for motor controllers
-    public static final int kLauncherLeftyID = 34;
+    public static final int kLauncherLeftyID = 41;
     public static final int kLauncherRightyID = 33;
 
     public static final int kLauncherCurrentLimit = 80;

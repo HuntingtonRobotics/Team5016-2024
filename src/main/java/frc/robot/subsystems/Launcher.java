@@ -20,7 +20,7 @@ public class Launcher extends SubsystemBase {
     m_left = new CANSparkMax(LauncherConstants.kLauncherLeftyID, MotorType.kBrushless);
     m_right = new CANSparkMax(LauncherConstants.kLauncherRightyID, MotorType.kBrushless);
 
-    m_left.follow(m_right);
+    m_left.follow(m_right); // set speed on right only
 
     m_left.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
     m_right.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
@@ -31,14 +31,12 @@ public class Launcher extends SubsystemBase {
   }
 
   public void setMotorSpeed(double speed) {
-    m_left.set(-speed);
     m_right.set(speed);
   }
 
   // A helper method to stop both wheels. You could skip having a method like this and call the
   // individual accessors with speed = 0 instead
   public void stop() {
-    m_left.set(0);
     m_right.set(0);
   }
 }
