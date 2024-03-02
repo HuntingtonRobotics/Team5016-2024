@@ -126,9 +126,6 @@ public class RobotContainer {
     // Launcher controlled with POV control i.e. "hat"
     m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
     m_operatorController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
-
-
-
     
     m_operatorController.povRight().whileTrue(m_claw.getClawDown());
     m_operatorController.povLeft().whileTrue(m_claw.getClawUp());
@@ -140,8 +137,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    //return Autos.exampleAuto(m_drivetrain);
-    return Commands.none();
+    return Autos.driveAndTurn(swerve);
   }
 }
