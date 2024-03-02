@@ -58,8 +58,8 @@ public final class Constants {
   }
   public static class ClawConstants{
     //these are sample numbers, they may need to be adjusted later as they are not the real numbers. 
-    public static final int kRightClaw = 99;
-    public static final int kLeftClaw = 98;    
+    public static final int kRightClaw = 45;
+    public static final int kLeftClaw = 46;    
     public static int CurrentLimit = 80;
   }
   
