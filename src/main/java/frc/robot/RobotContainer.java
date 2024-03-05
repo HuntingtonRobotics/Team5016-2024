@@ -137,8 +137,8 @@ public class RobotContainer {
     m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
     m_operatorController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
     
-    m_operatorController.povRight().whileTrue(m_claw.getClawDown());
-    m_operatorController.povLeft().whileTrue(m_claw.getClawUp());
+    m_operatorController.rightTrigger().whileTrue(m_claw.getClawUp());
+    m_operatorController.leftTrigger().whileTrue(m_claw.getClawDown());
   }
 
   /**
