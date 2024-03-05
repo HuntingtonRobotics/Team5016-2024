@@ -111,17 +111,27 @@ public class RobotContainer {
     // Stop the intake when the limit switch is activated ("false")
     limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
 
+    // MANUAL LAUNCH
+    m_operatorController.a().whileTrue(m_launcher.getlaunchCommand(0.8));
+
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
-    m_operatorController
-        .a()
-        .whileTrue(
-            new PrepareLaunch(m_launcher)
-                //.withTimeout(shuffleboard.getLauncherDelay())
-                .withTimeout(LauncherConstants.kLauncherDelay)
-                // .andThen(new LaunchNote(m_launcher))
-                .andThen(m_intake.getIntakeCommand())
-                .handleInterrupt(() -> m_launcher.stop()));
+    // m_operatorController.a().whileTrue(
+    //   Commands.run(() -> m_launcher.setMotorSpeed(0.8))
+    //   .alongWith(Commands.waitSeconds(2.0))
+    //   .andThen(m_intake.getIntakeCommand())
+    //   .withTimeout(2.0)
+    // );
+
+    // m_operatorController
+    //     .a()
+    //     .whileTrue(
+    //         new PrepareLaunch(m_launcher)
+    //             //.withTimeout(shuffleboard.getLauncherDelay())
+    //             .withTimeout(LauncherConstants.kLauncherDelay)
+    //             // .andThen(new LaunchNote(m_launcher))
+    //             .andThen(m_intake.getIntakeCommand())
+    //             .handleInterrupt(() -> m_launcher.stop()));
 
     // Launcher controlled with POV control i.e. "hat"
     m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
