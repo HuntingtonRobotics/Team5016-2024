@@ -52,8 +52,8 @@ public final class Constants {
   }
 
   public static class LauncherArmConstants {
-    public static final int kRightLifterID = 30;
-    public static final int kLeftLifterID = 31;
+    public static final int kRightLifterID = 31;
+    public static final int kLeftLifterID = 30;
     public static int CurrentLimit = 80;
   }
   public static class ClawConstants{
