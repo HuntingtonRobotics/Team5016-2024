@@ -21,22 +21,26 @@ public final class Autos {
     //     .withTimeout(1)
     //     .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0)));
 
-  public static Command driveAndTurn(SwerveDriveContainer swerve) {
-    var cmd = new SwerveRequest.FieldCentricFacingAngle()
-      .withTargetDirection(Rotation2d.fromDegrees(180))
-      .withVelocityX(swerve.MaxSpeed);
+  private static SwerveRequest.FieldCentricFacingAngle swerveReq = new SwerveRequest.FieldCentricFacingAngle();
 
-    return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> cmd)
+  public static Command driveAndTurn(SwerveDriveContainer swerve) {
+    swerveReq
+      .withTargetDirection(Rotation2d.fromDegrees(180))
+      .withVelocityX(swerve.MaxSpeed)
+      .withVelocityY(0);
+
+    return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> swerveReq)
       .withTimeout(3.0)
     );
   }
 
   public static Command driveTurnShoot(SwerveDriveContainer swerve, Launcher launchSub, Intake intakeSub) {
-    var swerveCmd = new SwerveRequest.FieldCentricFacingAngle()
+    swerveReq
       .withTargetDirection(Rotation2d.fromDegrees(180))
-      .withVelocityX(swerve.MaxSpeed);
+      .withVelocityX(swerve.MaxSpeed)
+      .withVelocityY(0);
     
-    return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> swerveCmd)
+    return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> swerveReq)
       .withTimeout(3.0)
       .andThen(
         Commands.run(() -> launchSub.setMotorSpeed(0.8))
