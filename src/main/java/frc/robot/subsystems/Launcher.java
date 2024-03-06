@@ -19,7 +19,8 @@ public class Launcher extends SubsystemBase {
   public Launcher() {
     m_left = new CANSparkMax(LauncherConstants.kLauncherLeftyID, MotorType.kBrushless);
     m_right = new CANSparkMax(LauncherConstants.kLauncherRightyID, MotorType.kBrushless);
-
+    
+    m_right.setInverted(true);
     m_left.follow(m_right); // set speed on right only
 
     m_left.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
