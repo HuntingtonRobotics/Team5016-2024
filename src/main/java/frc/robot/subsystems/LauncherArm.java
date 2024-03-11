@@ -20,8 +20,8 @@ public class LauncherArm extends SubsystemBase {
     m_left = new CANSparkMax(LauncherArmConstants.kLeftLifterID, MotorType.kBrushless);
     m_right = new CANSparkMax(LauncherArmConstants.kRightLifterID, MotorType.kBrushless);
 
-    m_right.setInverted(true);
-    m_left.follow(m_right, true); // set speed on right only
+    m_right.setInverted(false);
+    m_left.follow(m_right,true); // set speed on right only
 
     m_left.setSmartCurrentLimit(LauncherArmConstants.CurrentLimit);
     m_right.setSmartCurrentLimit(LauncherArmConstants.CurrentLimit);

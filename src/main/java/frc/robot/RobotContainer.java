@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -13,16 +15,20 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAndRange;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveStraight;
 import frc.robot.commands.PrepareLaunch;
+import frc.robot.commands.ShootAndDriveBack;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.LauncherArm;
+import frc.robot.subsystems.AutonomousDriveStraight;
 import frc.robot.subsystems.Claw;
 
 /**
@@ -46,6 +52,8 @@ public class RobotContainer {
   ShuffleboardConfig shuffleboard = new ShuffleboardConfig();
 
   Alliance assignedAlliance;
+  SwerveRequest.FieldCentric swerveCmd;
+  public DriveStraight m_driveStraightAuto = new DriveStraight(swerve.drivetrain);
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -104,9 +112,9 @@ public class RobotContainer {
   private void configureGameplayBindings() {
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
-    m_operatorController.leftBumper().whileTrue(m_intake.getIntakeCommand());
+    m_operatorController.leftBumper().onTrue(m_intake.run(()-> m_intake.setFeedWheel(Constants.IntakeConstants.IntakeFeederSpeed))).onFalse(m_intake.run(()->m_intake.setFeedWheel(0)));
 
-    m_operatorController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
+    m_operatorController.rightBumper().onTrue(m_intake.run(()->m_intake.setFeedWheel(-Constants.IntakeConstants.IntakeFeederSpeed))).onFalse(m_intake.run(()->m_intake.setFeedWheel(0)));
 
     // Stop the intake when the limit switch is activated ("false")
     limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
@@ -147,6 +155,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return Autos.driveAndTurn(swerve);
+    return new ShootAndDriveBack(m_launcher, m_intake, swerve);
+   // return Autos.driveAndTurn(swerve);
+      // swerveCmd = new SwerveRequest.FieldCentric()
+      // .withRotationalRate(0)
+      // .withVelocityX(.2);
+
+  
+    
+    // return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> swerveCmd)
+    //   .withTimeout(3.0)
+    // );
+
+    // return new RunCommand(() -> swerve.drivetrain.setControl(Commands.runOnce(swerveCmd, swerve.drivetrain))
+    //   .withTimeout(3.0)
+    // );
   }
 }

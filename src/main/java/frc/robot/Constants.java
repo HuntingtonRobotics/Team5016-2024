@@ -34,6 +34,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int IntakeMotorID = 40;
     public static final double IntakeFeederSpeed = 1.0;
+    public static final double IntakeSpeed = 1.0;
     public static final int CurrentLimit = 80;
   }
 
