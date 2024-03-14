@@ -22,6 +22,15 @@ public final class Autos {
   // .withTimeout(1)
   // .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0)));
 
+  public static Command driveForward(SwerveDriveContainer swerve) {
+    return swerve.drivetrain.applyRequest(() -> 
+        swerve.drive.withVelocityY(swerve.MaxSpeed)
+                      //.withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive left with negative X (left)
+                      //.withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left))
+    )
+        .withTimeout(1.0);
+  }
+
   public static Command driveAndTurn(SwerveDriveContainer swerve) {
     var cmd = new SwerveRequest.FieldCentricFacingAngle()
         .withTargetDirection(Rotation2d.fromDegrees(180))

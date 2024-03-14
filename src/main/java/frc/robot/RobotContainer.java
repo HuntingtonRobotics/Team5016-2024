@@ -92,8 +92,8 @@ public class RobotContainer {
     
     swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         swerve.drivetrain.applyRequest(() -> 
-          swerve.drive.withVelocityX(m_driverController.getLeftX() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
-                      .withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive left with negative X (left)
+          swerve.drive.withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
+                      .withVelocityX(m_driverController.getLeftX() * swerve.MaxSpeed) // Drive left with negative X (left)
                       .withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
@@ -121,6 +121,24 @@ public class RobotContainer {
 
     // MANUAL LAUNCH
     m_operatorController.a().whileTrue(m_launcher.getlaunchCommand(0.8));
+    m_operatorController.b().whileTrue(m_launcher.getlaunchCommand(-.8));
+
+    m_operatorController.y().whileTrue(Commands.startEnd(m_launcher::launchForAmp, m_launcher::stop));
+    //Command smartLaunch = 
+    //   Commands.sequence(
+    //     Commands.runOnce(m_launcher::launchForAmp, m_launcher),
+    //     Commands.waitUntil(() -> m_launcher.isAtSpeed()),
+    //     Commands.waitSeconds(2.0),
+    //     Commands.runOnce(() -> m_intake.setFeedWheel(Constants.IntakeConstants.IntakeFeederSpeed), m_intake),
+    //     Commands.waitUntil(() -> true),
+    //     Commands.waitSeconds(1.0),
+    //     Commands.runOnce(() -> {m_launcher.stop();m_intake.setFeedWheel(0); })
+    //   )
+    //   // .withTimeout(4.0)
+    //   // .andThen(
+    //   //   Commands.runOnce(() -> {m_launcher.stop();m_intake.setFeedWheel(0); })
+      
+    // );
 
     /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
      * command for 1 seconds and then run the LaunchNote command */
@@ -155,12 +173,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new ShootAndDriveBack(m_launcher, m_intake, swerve);
+    //return new ShootAndDriveBack(m_launcher, m_intake, swerve);
    // return Autos.driveAndTurn(swerve);
       // swerveCmd = new SwerveRequest.FieldCentric()
       // .withRotationalRate(0)
       // .withVelocityX(.2);
-
+    return Autos.driveForward(swerve);
   
     
     // return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> swerveCmd)

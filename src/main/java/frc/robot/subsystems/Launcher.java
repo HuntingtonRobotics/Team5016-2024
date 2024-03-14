@@ -12,19 +12,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 
 public class Launcher extends SubsystemBase {
-  private CANSparkMax m_left;
-  private CANSparkMax m_right;
+  private CANSparkMax m_bottom; // SparkMax+motor mounted left side
+  private CANSparkMax m_top; // SparkMax+motor mounted right side
 
   /** Creates a new Launcher. */
   public Launcher() {
-    m_left = new CANSparkMax(LauncherConstants.kLauncherLeftyID, MotorType.kBrushless);
-    m_right = new CANSparkMax(LauncherConstants.kLauncherRightyID, MotorType.kBrushless);
+    m_bottom = new CANSparkMax(LauncherConstants.kLauncherLeftyID, MotorType.kBrushless);
+    m_top = new CANSparkMax(LauncherConstants.kLauncherRightyID, MotorType.kBrushless);
     
-    m_right.setInverted(true);
-    m_left.follow(m_right); // set speed on right only
+    m_top.setInverted(true);
 
-    m_left.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
-    m_right.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
+    m_bottom.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
+    m_top.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
   }
 
   public Command getlaunchCommand(double speed) {
@@ -32,12 +31,26 @@ public class Launcher extends SubsystemBase {
   }
 
   public void setMotorSpeed(double speed) {
-    m_right.set(speed);
+  m_top.set(-0.8);
+  m_bottom.set(-0.3);
+
+  }
+
+  public void launchForAmp() {
+    m_top.set(-0.3125);
+    m_bottom.set(-0.175);
+  }
+
+  public boolean isAtSpeed() {
+    return (m_top.get() == -0.3125)
+     && (m_bottom.get() == -0.175);
   }
 
   // A helper method to stop both wheels. You could skip having a method like this and call the
   // individual accessors with speed = 0 instead
   public void stop() {
-    m_right.set(0);
+    m_top.set(0);
+    m_bottom.set(0);
+
   }
 }
