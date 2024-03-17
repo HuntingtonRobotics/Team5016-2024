@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 
@@ -26,16 +25,18 @@ public class Launcher extends SubsystemBase {
     m_top.setSmartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
   }
 
-  public Command getlaunchCommand(double speed) {
-    return this.startEnd(() -> setMotorSpeed(speed), () -> stop());
-  }
-
-  public void setMotorSpeed(double speed) {
+  /**
+   * Set launch speeds to launch the note at the base of a Speaker.
+   */
+  public void launchForSpeaker() {
   m_top.set(-0.8);
   m_bottom.set(-0.3);
 
   }
 
+  /**
+   * Set launch speeds to launch the note at the base of an Amplifier
+   */
   public void launchForAmp() {
     m_top.set(-0.3125);
     m_bottom.set(-0.175);
@@ -46,8 +47,6 @@ public class Launcher extends SubsystemBase {
      && (m_bottom.get() == -0.175);
   }
 
-  // A helper method to stop both wheels. You could skip having a method like this and call the
-  // individual accessors with speed = 0 instead
   public void stop() {
     m_top.set(0);
     m_bottom.set(0);
