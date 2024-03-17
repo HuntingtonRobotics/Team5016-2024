@@ -65,13 +65,28 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    double autoDriveDuration = SmartDashboard.getNumber("autoDriveDuration", 1.0);
-    autonomousChooser.setDefaultOption("Drive Only", Autos.driveForward(swerve, autoDriveDuration));
-    autonomousChooser.addOption("Launch then Drive", Autos.launchThenDriveForward(swerve, autoDriveDuration, m_intake, m_launcher));
+    AutonomousArgs autoArgs = BuildAutonomousArgs();
+    
+    autonomousChooser.setDefaultOption("Drive Only", Autos.driveForward(swerve, autoArgs));
+    autonomousChooser.addOption("Launch then Drive", Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher));
     SmartDashboard.putData(autonomousChooser);
 
     CameraServer.startAutomaticCapture(); // adds to dashboard
 
+  }
+
+  private AutonomousArgs BuildAutonomousArgs() {
+    var args = new AutonomousArgs();
+
+    double autoDriveDuration = SmartDashboard.getNumber("auto-DriveDuration", args.DriveDurationSeconds);
+
+    args.DriveDurationSeconds = autoDriveDuration;
+    args.LauncherMotorRampUpDelaySeconds = SmartDashboard.getNumber("auto-LauncherMotorRampUpDelay", args.LauncherMotorRampUpDelaySeconds);
+    args.NoteDeliveryDurationSeconds = SmartDashboard.getNumber("auto-NoteDelivery", args.NoteDeliveryDurationSeconds);
+    args.SequenceStopDeadlineSeconds = SmartDashboard.getNumber("auto-sequenceStop", args.SequenceStopDeadlineSeconds);
+    args.SequenceGlobalTimeoutSeconds = SmartDashboard.getNumber("auto-sequenceGlobalTimeout", args.SequenceGlobalTimeoutSeconds);
+
+    return args;
   }
 
   private Alliance getAlliance() {

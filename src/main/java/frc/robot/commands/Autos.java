@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.AutonomousArgs;
 import frc.robot.Constants;
 import frc.robot.SwerveDriveContainer;
 import frc.robot.subsystems.Intake;
@@ -18,30 +19,30 @@ public final class Autos {
   // .withTimeout(1)
   // .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0)));
 
-  public static Command driveForward(SwerveDriveContainer swerve, double durationSeconds) {
+  public static Command driveForward(SwerveDriveContainer swerve, AutonomousArgs args) {
     return swerve.drivetrain.applyRequest(() -> swerve.drive.withVelocityY(swerve.MaxSpeed))
-        .withTimeout(durationSeconds);
+        .withTimeout(args.DriveDurationSeconds);
   }
 
-  public static Command launchToSpeaker(Intake intakeSub, Launcher launcherSub) {
+  public static Command launchToSpeaker(Intake intakeSub, Launcher launcherSub, AutonomousArgs args) {
     Command launchSequence = Commands.runOnce(launcherSub::launchForSpeaker, launcherSub)
-        .andThen(Commands.waitSeconds(3.0))
+        .andThen(Commands.waitSeconds(args.LauncherMotorRampUpDelaySeconds))
         .andThen(Commands.deadline(
-            Commands.waitSeconds(1.0), // run intake until this expires
+            Commands.waitSeconds(args.NoteDeliveryDurationSeconds), // run intake until this expires
             Commands.runOnce(() -> intakeSub.setFeedWheel(Constants.IntakeConstants.IntakeFeederSpeed), intakeSub)))
         .andThen(Commands.deadline(
-            Commands.waitSeconds(1.5),
+            Commands.waitSeconds(args.SequenceStopDeadlineSeconds),
             Commands.runOnce(launcherSub::stop, launcherSub),
             Commands.runOnce(intakeSub::stop, intakeSub))
             .andThen(() -> write("Sequence completed normally")))
         .handleInterrupt(() -> write("sequence interrupted"));
 
-    return launchSequence.withTimeout(10); // No matter what, finish the sequence after X seconds
+    return launchSequence.withTimeout(args.SequenceGlobalTimeoutSeconds); // No matter what, finish the sequence after X seconds
 
   }
 
-  public static Command launchThenDriveForward(SwerveDriveContainer swerve, double durationSeconds, Intake intake, Launcher launcher) {
-    return launchToSpeaker(intake, launcher).andThen(driveForward(swerve, durationSeconds));
+  public static Command launchThenDriveForward(SwerveDriveContainer swerve, AutonomousArgs args, Intake intake, Launcher launcher) {
+    return launchToSpeaker(intake, launcher, args).andThen(driveForward(swerve, args));
   }
 
   private static void write(String x) {
