@@ -159,13 +159,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //return new ShootAndDriveBack(m_launcher, m_intake, swerve);
-   // return Autos.driveAndTurn(swerve);
-      // swerveCmd = new SwerveRequest.FieldCentric()
-      // .withRotationalRate(0)
-      // .withVelocityX(.2);
-    //return Autos.driveForward(swerve, SmartDashboard.getNumber(null, 0));
-
     return autonomousChooser.getSelected();
   
   }
