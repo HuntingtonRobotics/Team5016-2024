@@ -174,7 +174,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autonomousChooser.getSelected();
-  
+    //return autonomousChooser.getSelected();
+    AutonomousArgs autoArgs = BuildAutonomousArgs();
+    // return Autos.driveForward(swerve, autoArgs);
+    return Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher));
   }
 }
