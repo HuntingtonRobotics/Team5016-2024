@@ -20,7 +20,7 @@ public final class Autos {
   // .andThen(new RunCommand(() -> drivetrain.arcadeDrive(0, 0)));
 
   public static Command driveForward(SwerveDriveContainer swerve, AutonomousArgs args) {
-    return swerve.drivetrain.applyRequest(() -> swerve.drive.withVelocityY(swerve.MaxSpeed))
+    return swerve.drivetrain.applyRequest(() -> swerve.drive.withVelocityY(swerve.MaxSpeed*0.3))
         .withTimeout(args.DriveDurationSeconds);
   }
 
