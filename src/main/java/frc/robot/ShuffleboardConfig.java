@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.LauncherConstants;
 
 public class ShuffleboardConfig {
@@ -25,7 +26,6 @@ public class ShuffleboardConfig {
         tab.add(primaryCamera);
         // LauncherDelay = tab.add("Launcher Delay", 1.0)
         //    .getEntry();
-
         
     }
 }

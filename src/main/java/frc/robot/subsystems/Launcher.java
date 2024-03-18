@@ -14,7 +14,7 @@ import frc.robot.Constants.LauncherConstants;
 public class Launcher extends SubsystemBase {
   private CANSparkMax m_bottom; // SparkMax+motor mounted left side
   private CANSparkMax m_top; // SparkMax+motor mounted right side
-
+public double speed=0;
   /** Creates a new Launcher. */
   public Launcher() {
     m_bottom = new CANSparkMax(LauncherConstants.kLauncherLeftyID, MotorType.kBrushless);
@@ -31,8 +31,10 @@ public class Launcher extends SubsystemBase {
   }
 
   public void setMotorSpeed(double speed) {
-  m_top.set(-0.8);
-  m_bottom.set(-0.3);
+  //m_top.set(-0.8);
+  //m_bottom.set(-0.3);
+  m_top.set(-1.0);
+  m_bottom.set(-0.5);
 
   }
 

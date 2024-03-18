@@ -24,6 +24,7 @@ import frc.robot.commands.AimAndRange;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveStraight;
 import frc.robot.commands.PrepareLaunch;
+import frc.robot.commands.RunIntake;
 import frc.robot.commands.ShootAndDriveBack;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
@@ -44,8 +45,6 @@ public class RobotContainer {
   private final Launcher m_launcher = new Launcher();
   private final LauncherArm m_launcherArm = new LauncherArm();
   private final Claw m_claw = new Claw();
-  
-
   public final DigitalInput limitSwitch = new DigitalInput(0);
   public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
 
@@ -120,8 +119,8 @@ public class RobotContainer {
     limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
 
     // MANUAL LAUNCH
-    m_operatorController.a().whileTrue(m_launcher.getlaunchCommand(0.8));
-    m_operatorController.b().whileTrue(m_launcher.getlaunchCommand(-.8));
+    m_operatorController.a().whileTrue(m_launcher.getlaunchCommand(.8));
+    //m_operatorController.b().whileTrue(m_launcher.getlaunchCommand(-.8));
 
     m_operatorController.y().whileTrue(Commands.startEnd(m_launcher::launchForAmp, m_launcher::stop));
     //Command smartLaunch = 
@@ -178,7 +177,7 @@ public class RobotContainer {
       // swerveCmd = new SwerveRequest.FieldCentric()
       // .withRotationalRate(0)
       // .withVelocityX(.2);
-    return Autos.driveForward(swerve);
+   // return Autos.driveForward(swerve);
   
     
     // return new RunCommand(() -> swerve.drivetrain.applyRequest(() -> swerveCmd)
@@ -188,5 +187,10 @@ public class RobotContainer {
     // return new RunCommand(() -> swerve.drivetrain.setControl(Commands.runOnce(swerveCmd, swerve.drivetrain))
     //   .withTimeout(3.0)
     // );
+
+      
+   return new RunCommand(() -> new PrepareLaunch(m_launcher).withTimeout(1)); 
+
+
   }
 }
