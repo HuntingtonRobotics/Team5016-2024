@@ -61,9 +61,9 @@ public final class Autos {
     
   public static Command launchThenDriveForward(SwerveDriveContainer swerve, AutonomousArgs args, Intake intake, Launcher launcher) {
     return launchToSpeaker(intake, launcher, args)
-      .andThen(driveForward(swerve, args))
+      .andThen(driveForward(swerve, args).withTimeout(2.5));
       //.andThen(intakeAbit(intake, args))
-      .withTimeout(4.0); // No matter what, finish the sequence after X seconds
+      //.withTimeout(4.0); // No matter what, finish the sequence after X seconds
   }
 
   private static void write(String x) {
