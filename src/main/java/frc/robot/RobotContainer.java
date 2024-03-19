@@ -177,6 +177,6 @@ public class RobotContainer {
     //return autonomousChooser.getSelected();
     AutonomousArgs autoArgs = BuildAutonomousArgs();
     // return Autos.driveForward(swerve, autoArgs);
-    return Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher));
+    return Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher);
   }
 }
