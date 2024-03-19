@@ -11,44 +11,39 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClawConstants;
 
-/** Subsystem for the lifter-in-a-box component */
+/** Subsystem for the "climber" lifter-in-a-box component */
 public class Claw extends SubsystemBase {
-  private CANSparkMax m_spin1;
-  private CANSparkMax m_spin2;
+  private CANSparkMax m_right;
+  private CANSparkMax m_left;
 
   public Claw() {
      
-    m_spin1 = new CANSparkMax(ClawConstants.kRightClaw, MotorType.kBrushless);
-    m_spin2 = new CANSparkMax(ClawConstants.kLeftClaw, MotorType.kBrushless);
+    m_right = new CANSparkMax(ClawConstants.kRightClaw, MotorType.kBrushless);
+    m_left = new CANSparkMax(ClawConstants.kLeftClaw, MotorType.kBrushless);
 
-    m_spin2.follow(m_spin1);
+    m_left.follow(m_right); // set speed on right only
 
-    m_spin1.setSmartCurrentLimit(ClawConstants.CurrentLimit);
-    m_spin2.setSmartCurrentLimit(ClawConstants.CurrentLimit);
+    m_right.setSmartCurrentLimit(ClawConstants.CurrentLimit);
+    m_left.setSmartCurrentLimit(ClawConstants.CurrentLimit);
   }
   
   public Command getClawUp() {
     return this.startEnd(
         () -> {
-          m_spin1.set(1.0);
-          m_spin2.set(-1.0);
+          m_right.set(1.0);
         },
         () -> {
-          m_spin1.set(0);
-          m_spin2.set(0);
+          m_right.set(0);
         });
   }
 
   public Command getClawDown() {
     return this.startEnd(
         () -> {
-          m_spin1.set(-1.0);
-          m_spin2.set(1.0);
+          m_right.set(-1.0);
         },
         () -> {
-          m_spin1.set(0);
-          m_spin2.set(0);
+          m_right.set(0);
         });
-
-      }
+  }
 }

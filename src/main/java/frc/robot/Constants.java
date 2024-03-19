@@ -34,6 +34,7 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int IntakeMotorID = 40;
     public static final double IntakeFeederSpeed = 1.0;
+    public static final double IntakeSpeed = 1.0;
     public static final int CurrentLimit = 80;
   }
 
@@ -52,11 +53,12 @@ public final class Constants {
   }
 
   public static class LauncherArmConstants {
-    public static final int kRightLifterID = 30;
-    public static final int kLeftLifterID = 31;
+    public static final int kRightLifterID = 31;
+    public static final int kLeftLifterID = 30;
     public static int CurrentLimit = 80;
   }
   public static class ClawConstants{
+    //these are sample numbers, they may need to be adjusted later as they are not the real numbers. 
     public static final int kRightClaw = 51;
     public static final int kLeftClaw = 50;    
     public static int CurrentLimit = 80;

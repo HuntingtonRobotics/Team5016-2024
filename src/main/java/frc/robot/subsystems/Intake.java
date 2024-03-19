@@ -12,12 +12,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-  private CANSparkMax m_intake;
+  public CANSparkMax m_intakeMotor;
 
   /** Creates a new Launcher. */
   public Intake() {
-    m_intake = new CANSparkMax(IntakeConstants.IntakeMotorID, MotorType.kBrushless);
-    m_intake.setSmartCurrentLimit(IntakeConstants.CurrentLimit);
+    m_intakeMotor = new CANSparkMax(IntakeConstants.IntakeMotorID, MotorType.kBrushless);
+    m_intakeMotor.setSmartCurrentLimit(IntakeConstants.CurrentLimit);
   }
 
   /**
@@ -33,7 +33,8 @@ public class Intake extends SubsystemBase {
     return this.startEnd(
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
-          setFeedWheel(IntakeConstants.IntakeFeederSpeed);
+          // setFeedWheel(IntakeConstants.IntakeFeederSpeed);
+          setIntakeSpeed(IntakeConstants.IntakeSpeed);
         },
         // When the command stops, stop the wheels
         () -> {
@@ -47,7 +48,8 @@ public class Intake extends SubsystemBase {
     return this.startEnd(
         // When the command is initialized, set the wheels to the intake speed values
         () -> {
-          setFeedWheel(-IntakeConstants.IntakeFeederSpeed);
+          // setFeedWheel(-IntakeConstants.IntakeFeederSpeed);
+          setIntakeSpeed(-IntakeConstants.IntakeSpeed);
         },
         // When the command stops, stop the wheels
         () -> {
@@ -62,16 +64,17 @@ public class Intake extends SubsystemBase {
 
   // An accessor method to set the speed (technically the output percentage) of the feed wheel
   public void setFeedWheel(double speed) {
-    m_intake.set(speed);
+    m_intakeMotor.set(speed);
   }
 
   // A helper method to stop both wheels. You could skip having a method like this and call the
   // individual accessors with speed = 0 instead
   public void stop() {
-    m_intake.set(0);
+    // m_intakeMotor.set(0);
+    setFeedWheel(0.0);
   }
 
   public void resume() {
-    m_intake.set(-0.7);
+    m_intakeMotor.set(-0.7);
   }
 }

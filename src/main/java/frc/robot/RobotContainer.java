@@ -6,20 +6,23 @@ package frc.robot;
 
 import java.util.Optional;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAndRange;
 import frc.robot.commands.Autos;
-import frc.robot.commands.PrepareLaunch;
+import frc.robot.commands.DriveStraight;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.LauncherArm;
@@ -38,14 +41,15 @@ public class RobotContainer {
   private final Launcher m_launcher = new Launcher();
   private final LauncherArm m_launcherArm = new LauncherArm();
   private final Claw m_claw = new Claw();
-  
+
+  private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
 
   public final DigitalInput limitSwitch = new DigitalInput(0);
   public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
 
-  ShuffleboardConfig shuffleboard = new ShuffleboardConfig();
-
   Alliance assignedAlliance;
+  SwerveRequest.FieldCentric swerveCmd;
+  public DriveStraight m_driveStraightAuto = new DriveStraight(swerve.drivetrain);
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -61,13 +65,37 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    var cam = CameraServer.startAutomaticCapture();
-    shuffleboard.Setup(cam);
+    AutonomousArgs autoArgs = BuildAutonomousArgs();
+    
+    autonomousChooser.setDefaultOption("Drive Only", Autos.driveForward(swerve, autoArgs));
+    autonomousChooser.addOption("Launch then Drive", Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher));
+    SmartDashboard.putData(autonomousChooser);
+
+    CameraServer.startAutomaticCapture(); // adds to dashboard
+
+  }
+
+  private AutonomousArgs BuildAutonomousArgs() {
+    var args = new AutonomousArgs();
+
+    double autoDriveDuration = SmartDashboard.getNumber("auto-DriveDuration", args.DriveDurationSeconds);
+
+    args.DriveDurationSeconds = autoDriveDuration;
+    args.LauncherMotorRampUpDelaySeconds = SmartDashboard.getNumber("auto-LauncherMotorRampUpDelay", args.LauncherMotorRampUpDelaySeconds);
+    args.NoteDeliveryDurationSeconds = SmartDashboard.getNumber("auto-NoteDelivery", args.NoteDeliveryDurationSeconds);
+    args.SequenceStopDeadlineSeconds = SmartDashboard.getNumber("auto-sequenceStop", args.SequenceStopDeadlineSeconds);
+    args.SequenceGlobalTimeoutSeconds = SmartDashboard.getNumber("auto-sequenceGlobalTimeout", args.SequenceGlobalTimeoutSeconds);
+
+    return args;
   }
 
   private Alliance getAlliance() {
     Optional<Alliance> ally = DriverStation.getAlliance();
-    return ally.get();
+    if (ally.isPresent()) {
+      return ally.get();
+    }
+
+    return Alliance.Blue;
   }
 
   /**
@@ -84,8 +112,8 @@ public class RobotContainer {
     
     swerve.drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
         swerve.drivetrain.applyRequest(() -> 
-          swerve.drive.withVelocityX(m_driverController.getLeftX() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
-                      .withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive left with negative X (left)
+          swerve.drive.withVelocityY(-m_driverController.getLeftY() * swerve.MaxSpeed) // Drive forward with negative Y (forward)
+                      .withVelocityX(m_driverController.getLeftX() * swerve.MaxSpeed) // Drive left with negative X (left)
                       .withRotationalRate(-m_driverController.getRightX() * swerve.MaxAngularRate) // Drive counterclockwise with negative X (left)
         ));
 
@@ -104,44 +132,40 @@ public class RobotContainer {
   private void configureGameplayBindings() {
     // Set up a binding to run the intake command while the operator is pressing and holding the
     // left Bumper
-    m_operatorController.leftBumper().whileTrue(m_intake.getIntakeCommand());
+    m_operatorController.leftBumper().onTrue(m_intake.run(()-> m_intake.setFeedWheel(Constants.IntakeConstants.IntakeFeederSpeed))).onFalse(m_intake.run(()->m_intake.setFeedWheel(0)));
 
-    m_operatorController.rightBumper().whileTrue(m_intake.reverseIntakeCommand());
+    m_operatorController.rightBumper().onTrue(m_intake.run(()->m_intake.setFeedWheel(-Constants.IntakeConstants.IntakeFeederSpeed))).onFalse(m_intake.run(()->m_intake.setFeedWheel(0)));
 
     // Stop the intake when the limit switch is activated ("false")
     limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
 
-    // MANUAL LAUNCH
-    m_operatorController.a().whileTrue(m_launcher.getlaunchCommand(0.8));
+    // LAUNCH - speeds optimized for Speaker
+    m_operatorController.a().whileTrue(Commands.startEnd(m_launcher::launchForSpeaker, m_launcher::stop, m_launcher));
 
-    /*Create an inline sequence to run when the operator presses and holds the A (green) button. Run the PrepareLaunch
-     * command for 1 seconds and then run the LaunchNote command */
-    // m_operatorController.a().whileTrue(
-    //   Commands.run(() -> m_launcher.setMotorSpeed(0.8))
-    //   .alongWith(Commands.waitSeconds(2.0))
-    //   .andThen(m_intake.getIntakeCommand())
-    //   .withTimeout(2.0)
+    // LAUNCH - speeds optimized for Amp
+    m_operatorController.y().whileTrue(Commands.startEnd(m_launcher::launchForAmp, m_launcher::stop, m_launcher));
+    //Command smartLaunch = 
+    //   Commands.sequence(
+    //     Commands.runOnce(m_launcher::launchForAmp, m_launcher),
+    //     Commands.waitUntil(() -> m_launcher.isAtSpeed()),
+    //     Commands.waitSeconds(2.0),
+    //     Commands.runOnce(() -> m_intake.setFeedWheel(Constants.IntakeConstants.IntakeFeederSpeed), m_intake),
+    //     Commands.waitUntil(() -> true),
+    //     Commands.waitSeconds(1.0),
+    //     Commands.runOnce(() -> {m_launcher.stop();m_intake.setFeedWheel(0); })
+    //   )
+    //   // .withTimeout(4.0)
+    //   // .andThen(
+    //   //   Commands.runOnce(() -> {m_launcher.stop();m_intake.setFeedWheel(0); })
+      
     // );
-
-    // m_operatorController
-    //     .a()
-    //     .whileTrue(
-    //         new PrepareLaunch(m_launcher)
-    //             //.withTimeout(shuffleboard.getLauncherDelay())
-    //             .withTimeout(LauncherConstants.kLauncherDelay)
-    //             // .andThen(new LaunchNote(m_launcher))
-    //             .andThen(m_intake.getIntakeCommand())
-    //             .handleInterrupt(() -> m_launcher.stop()));
 
     // Launcher controlled with POV control i.e. "hat"
     m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
     m_operatorController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
-
-
-
     
-    m_operatorController.povRight().whileTrue(m_claw.getClawDown());
-    m_operatorController.povLeft().whileTrue(m_claw.getClawUp());
+    m_operatorController.rightTrigger().whileTrue(m_claw.getClawUp());
+    m_operatorController.leftTrigger().whileTrue(m_claw.getClawDown());
   }
 
   /**
@@ -150,8 +174,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    //return Autos.exampleAuto(m_drivetrain);
-    return Commands.none();
+    //return autonomousChooser.getSelected();
+    AutonomousArgs autoArgs = BuildAutonomousArgs();
+    // return Autos.driveForward(swerve, autoArgs);
+    return Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher);
   }
 }
