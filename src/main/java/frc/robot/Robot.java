@@ -4,10 +4,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants.LauncherConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Launcher;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +28,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+  private GenericEntry m_LSpeed;
+  public double test;
+
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -30,7 +43,16 @@ public class Robot extends TimedRobot {
     for (int port = 5800; port <= 5807; port++) {
             PortForwarder.add(port, "limelight.local", port);
     }
-    
+
+    m_LSpeed =
+        Shuffleboard.getTab("Configuration")
+            .add("Max Speed", 1)
+            .withWidget("Number Slider")
+            .withPosition(1, 1)
+            .withSize(2, 1)
+            .getEntry();
+
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
@@ -63,6 +85,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    test = (m_LSpeed.getDouble(1.0));
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
