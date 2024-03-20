@@ -44,12 +44,10 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
 
-  public final DigitalInput limitSwitch = new DigitalInput(0);
-  public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
+  // public final DigitalInput limitSwitch = new DigitalInput(0);
+  // public final Trigger limitSwitchTrigger = new Trigger(limitSwitch::get);
 
-  Alliance assignedAlliance;
-  SwerveRequest.FieldCentric swerveCmd;
-  public DriveStraight m_driveStraightAuto = new DriveStraight(swerve.drivetrain);
+  private Alliance assignedAlliance;
 
   /*The gamepad provided in the KOP shows up like an XBox controller if the mode switch is set to X mode using the
    * switch on the top.*/
@@ -137,33 +135,19 @@ public class RobotContainer {
     m_operatorController.rightBumper().onTrue(m_intake.run(()->m_intake.setFeedWheel(-Constants.IntakeConstants.IntakeFeederSpeed))).onFalse(m_intake.run(()->m_intake.setFeedWheel(0)));
 
     // Stop the intake when the limit switch is activated ("false")
-    limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
+    // limitSwitchTrigger.toggleOnFalse(Commands.run(m_intake::stop));
 
     // LAUNCH - speeds optimized for Speaker
     m_operatorController.a().whileTrue(Commands.startEnd(m_launcher::launchForSpeaker, m_launcher::stop, m_launcher));
 
     // LAUNCH - speeds optimized for Amp
     m_operatorController.y().whileTrue(Commands.startEnd(m_launcher::launchForAmp, m_launcher::stop, m_launcher));
-    //Command smartLaunch = 
-    //   Commands.sequence(
-    //     Commands.runOnce(m_launcher::launchForAmp, m_launcher),
-    //     Commands.waitUntil(() -> m_launcher.isAtSpeed()),
-    //     Commands.waitSeconds(2.0),
-    //     Commands.runOnce(() -> m_intake.setFeedWheel(Constants.IntakeConstants.IntakeFeederSpeed), m_intake),
-    //     Commands.waitUntil(() -> true),
-    //     Commands.waitSeconds(1.0),
-    //     Commands.runOnce(() -> {m_launcher.stop();m_intake.setFeedWheel(0); })
-    //   )
-    //   // .withTimeout(4.0)
-    //   // .andThen(
-    //   //   Commands.runOnce(() -> {m_launcher.stop();m_intake.setFeedWheel(0); })
-      
-    // );
 
-    // Launcher controlled with POV control i.e. "hat"
+    // Launcher arm controlled with POV control i.e. "hat"
     m_operatorController.povUp().whileTrue(m_launcherArm.getLauncherUpCommand());
     m_operatorController.povDown().whileTrue(m_launcherArm.getLauncherDownCommand());
     
+    // Claw (climber) raise up/down for end-of-match
     m_operatorController.rightTrigger().whileTrue(m_claw.getClawUp());
     m_operatorController.leftTrigger().whileTrue(m_claw.getClawDown());
   }
@@ -174,9 +158,24 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //return autonomousChooser.getSelected();
+    /* Default arg values are setup here;
+     *   make changes below during competition instead of in the class
+     *   e.g.  autoArgs.DriveDurationTimeoutSeconds = 4.0;
+     */
     AutonomousArgs autoArgs = BuildAutonomousArgs();
+    
+    /* SendableChooser below will allow an auto method to be chosen in Shuffleboard.
+    *  But as of 3/20/24 it is not working.
+    *  Instead, comment/uncomment the defined auto commands manually and re-deploy
+    */
+    //return autonomousChooser.getSelected();
+    
+    /* driveForward just...drives forward for X seconds */
     // return Autos.driveForward(swerve, autoArgs);
+
+    /* Launch the note, then move the robot out of its zone.
+     * Launching is supported from front or sides.
+     */
     return Autos.launchThenDriveForward(swerve, autoArgs, m_intake, m_launcher);
   }
 }
